@@ -1,13 +1,7 @@
 import * as requireDirectory from 'require-directory'
 import * as koa from 'koa'
 import { findIndex } from 'lodash'
-
-interface Request extends koa.BaseRequest {
-    body?: any
-    files?: {
-        [key: string]: File
-    }
-}
+import { resolve, join } from 'path'
 
 export default class ControllerStorage {
 
@@ -23,7 +17,7 @@ export default class ControllerStorage {
      * 加载路由
      */
     private static loadRouter() {
-        const apiDirectory: string = `${process.cwd()}/dist/controller`
+        const apiDirectory: string = resolve(join('dist', 'controller'))
         requireDirectory(module, apiDirectory)
     }
 
