@@ -1,7 +1,13 @@
 {
   "name": "cake-controller",
-  "version": "1.0.1",
-  "main": "dist",
+  "version": "1.0.7",
+  "main": "index.js",
+  "files": [
+    "**/*.js",
+    "**/*.d.ts",
+    "yarn.lock",
+    "README.md"
+  ],
   "repository": "https://github.com/13990290259/cake-controller.git",
   "author": "曾藤辉 <'13990290259'>",
   "license": "MIT",
