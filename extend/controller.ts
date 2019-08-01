@@ -48,6 +48,15 @@ class Base {
         const json = (this.ctx.request as Request).body
         return this.param(name, json)
     }
+    
+    /**
+     * 获取文件
+     * @param name 
+     */
+    protected files(name?: string) {
+        const json = (this.ctx.request as Request).files
+        return this.param(name, json)
+    }
 
     /**
      * 获取get参数
@@ -69,7 +78,7 @@ class Base {
             let arr = name.split(/\s*,\s*/)
             let value: { [index: string]: any } = {}
             arr.forEach(item => {
-                value[item] = json[item]
+                if (json[item] !== undefined) value[item] = json[item]
             })
             return value
         } else {
