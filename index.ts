@@ -10,7 +10,7 @@ export default class ControllerStorage {
     public static Actions: { type: string, target: any, method: string, route: string, controller: string }[] = []
 
     public static init() {
-        this.loadRouter()
+        ControllerStorage.loadRouter()
     }
 
     /**
