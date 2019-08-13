@@ -1,15 +1,13 @@
 import Storage from '../index'
 
-export default function register(type: string, url?: string): Function {
-    return (target: Object, methodName: string) => {
-        let name: string = target.constructor.name
-        if (Storage.Controllers.includes(name) == false) Storage.Controllers.push(name)
+export default function register(options: { type: string, route?: string, prefix?: string }): Function {
+    return (target: Object, method: string) => {
         Storage.Actions.push({
-            type,
+            type: options.type,
+            method,
+            route: (options && options.route) || method,
             target: target.constructor,
-            method: methodName,
-            route: url || methodName,
-            controller: name
+            controller: target.constructor.name
         })
     }
 }

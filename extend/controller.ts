@@ -9,18 +9,10 @@ interface Request extends BaseRequest {
 }
 
 class Base {
-    private _ctx: Context
+    protected ctx: Context
 
-    protected constructor(ctx: Context) {
-        this._ctx = ctx
-    }
-
-    get ctx() {
-        return this._ctx
-    }
-
-    set ctx(value: Context) {
-        this.ctx = value
+    constructor(ctx: Context) {
+        this.ctx = ctx
     }
 
     /**
@@ -35,7 +27,7 @@ class Base {
      * 是否ajax请求
      * @param method 
      */
-    protected isAjax(method) {
+    protected isAjax(method: string) {
         if (method && !this.isMethod(method)) return false
         return this.ctx.header['x-requested-with'] === 'XMLHttpRequest'
     }
@@ -48,7 +40,7 @@ class Base {
         const json = (this.ctx.request as Request).body
         return this.param(name, json)
     }
-    
+
     /**
      * 获取文件
      * @param name 
@@ -72,9 +64,9 @@ class Base {
      * @param name 
      * @param json 
      */
-    private param(name: string, json: { [index: string]: any }) {
+    private param(name: string, json: { [index: string]: any }): { [index: string]: any } | {} {
         if (!name) return json
-        if (name.indexOf(',') > -1) {
+        if (name.includes(',')) {
             let arr = name.split(/\s*,\s*/)
             let value: { [index: string]: any } = {}
             arr.forEach(item => {
@@ -82,7 +74,7 @@ class Base {
             })
             return value
         } else {
-            return json[name] || undefined
+            return json[name] || {}
         }
     }
 }
