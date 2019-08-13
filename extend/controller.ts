@@ -1,5 +1,5 @@
 import * as jwt from 'jsonwebtoken'
-import { Context, BaseRequest } from 'koa';
+import { Context, BaseRequest } from 'koa'
 
 interface Request extends BaseRequest {
     body?: any
@@ -8,11 +8,46 @@ interface Request extends BaseRequest {
     }
 }
 
-class Base {
+export default class Base {
     protected ctx: Context
 
     constructor(ctx: Context) {
         this.ctx = ctx
+    }
+
+    /**
+     * 获取IP
+     */
+    protected get ip() {
+        return this.ctx.request.ip
+    }
+
+    /**
+     * 当前访问域名包括端口号
+     */
+    protected get host() {
+        return this.ctx.request.host
+    }
+
+    /**
+     * 当前访问域名
+     */
+    protected get hostname() {
+        return this.ctx.request.hostname
+    }
+
+    /**
+     * 当前URL 不含querystring
+     */
+    protected get baseUrl() {
+        return this.ctx.request.origin + this.ctx.request.path
+    }
+
+    /**
+     * 完整URL
+     */
+    protected get url() {
+        return this.ctx.request.href
     }
 
     /**
@@ -77,6 +112,13 @@ class Base {
             return json[name] || {}
         }
     }
-}
 
-export default Base
+    /**
+     * 抛出错误
+     * @param msg 
+     * @param code 
+     */
+    protected error(msg: string, code: number = 500) {
+        this.ctx.throw(msg, code)
+    }
+}

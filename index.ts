@@ -49,9 +49,10 @@ export default class ControllerStorage {
         try {
             // 实例化
             const instance = new ControllerStorage.Actions[actionsIndex].target(ctx)
-            ctx.body = await instance[ControllerStorage.Actions[actionsIndex].method]() || ""
+            const r = await instance[ControllerStorage.Actions[actionsIndex].method]()
+            ctx.body = r === undefined ? {} : r
         } catch (error) {
-            ctx.throw(500, error.message)
+            ctx.throw(error.statusCode || error.status || 500, error.message)
         } finally {
             await next()
         }
