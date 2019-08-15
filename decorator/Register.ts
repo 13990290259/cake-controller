@@ -1,6 +1,6 @@
 import Storage from '../index'
 
-export default function register(options: { type: string, route?: string, prefix?: string }): Function {
+export default function register(options: { type: string, route?: string }): Function {
     return (target: Object, method: string) => {
         Storage.Actions.push({
             type: options.type,

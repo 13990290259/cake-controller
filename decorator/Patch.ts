@@ -1,5 +1,5 @@
 import register from './Register'
 
-export function Patch(options?: { route?: string }) {
-    return register(Object.assign(options || {}, { type: "PATCH" }))
+export function Patch(route?: string) {
+    return register(Object.assign({ route }, { type: "PATCH" }))
 }

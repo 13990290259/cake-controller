@@ -1,5 +1,5 @@
 import register from './Register'
 
-export function Delete(options?: { route?: string }) {
-    return register(Object.assign(options || {}, { type: "DELETE" }))
+export function Delete(route?: string) {
+    return register(Object.assign({ route }, { type: "DELETE" }))
 }
