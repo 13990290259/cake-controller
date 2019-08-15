@@ -9,8 +9,6 @@ export default class ControllerStorage {
         this.init(app)
     }
 
-    public static Controllers: { name: string, constructorName: string }[] = []
-
     public static Actions: { type: string, method: string, route: string, controller: string, target: any }[] = []
 
     private init(app: koa) {
@@ -36,20 +34,15 @@ export default class ControllerStorage {
         let [controller, method]: string[] = ctx.path.substr(ctx.path.indexOf('/') + 1).split('/')
         if (!controller) controller = 'index'
         if (!method) method = 'index'
-
-        let controllerIndex: number = findIndex(ControllerStorage.Controllers, { name: controller })
-        // 控制器不存在
-        if (controllerIndex == -1) ctx.throw(404)
-
-        let actionsIndex: number = findIndex(ControllerStorage.Actions, { controller: ControllerStorage.Controllers[controllerIndex].constructorName, route: method })
         // 方法不存在
-        if (actionsIndex == -1) ctx.throw(404)
+        let index: number = findIndex(ControllerStorage.Actions, { controller, route: method })
+        if (index == -1) ctx.throw(404)
         // 不允许访问
-        if (ControllerStorage.Actions[actionsIndex].type != ctx.method) ctx.throw(405)
+        if (ControllerStorage.Actions[index].type != ctx.method) ctx.throw(405)
         try {
             // 实例化
-            const instance = new ControllerStorage.Actions[actionsIndex].target(ctx)
-            const r = await instance[ControllerStorage.Actions[actionsIndex].method]()
+            const instance = new ControllerStorage.Actions[index].target(ctx)
+            const r = await instance[ControllerStorage.Actions[index].method]()
             ctx.body = r === undefined ? {} : r
         } catch (error) {
             ctx.throw(error.statusCode || error.status || 500, error.message)
