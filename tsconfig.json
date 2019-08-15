@@ -6,8 +6,7 @@
         "declaration": true,
         "experimentalDecorators": true,
         "removeComments": true,
-        "preserveConstEnums": true,
-        "outDir": "dist"
+        "preserveConstEnums": true
     },
     "exclude": [
         "node_modules"
