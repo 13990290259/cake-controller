@@ -1,4 +1,3 @@
-import * as jwt from 'jsonwebtoken'
 import { Context, BaseRequest } from 'koa'
 import ControllerStorage from '../index'
 import { findIndex } from 'lodash'
@@ -148,8 +147,10 @@ export default class Base {
             if (name == null) {
                 this.ctx.session = null
                 return false
+            } else {
+                if (!this.ctx.session) return false
+                return this.ctx.session[name]
             }
-            return this.ctx.session && this.ctx.session[name] || false
         }
     }
 }
