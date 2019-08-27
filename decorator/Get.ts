@@ -1,5 +1,5 @@
 import register from './Register'
 
-export function Get(url?: string) {
-    return register('GET', url)
+export function Get(route?: string) {
+    return register(Object.assign({ route }, { type: "GET" }))
 }

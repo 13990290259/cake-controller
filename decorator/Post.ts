@@ -1,5 +1,5 @@
 import register from './Register'
 
-export function Post(url?: string) {
-    return register('POST', url)
+export function Post(route?: string) {
+    return register(Object.assign({ route }, { type: "POST" }))
 }

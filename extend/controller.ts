@@ -1,5 +1,6 @@
-import * as jwt from 'jsonwebtoken'
-import { Context, BaseRequest } from 'koa';
+import { Context, BaseRequest } from 'koa'
+import ControllerStorage from '../index'
+import { findIndex } from 'lodash'
 
 interface Request extends BaseRequest {
     body?: any
@@ -8,26 +9,53 @@ interface Request extends BaseRequest {
     }
 }
 
-class Base {
-    private _ctx: Context
+export default class Base {
+    protected ctx: Context
 
-    protected constructor(ctx: Context) {
-        this._ctx = ctx
+    constructor(ctx: Context) {
+        this.ctx = ctx
     }
 
-    get ctx() {
-        return this._ctx
+    /**
+     * 获取IP
+     */
+    protected get ip(): string {
+        return this.ctx.request.ip
     }
 
-    set ctx(value: Context) {
-        this.ctx = value
+    /**
+     * 当前访问域名包括端口号
+     */
+    protected get host(): string {
+        return this.ctx.request.host
+    }
+
+    /**
+     * 当前访问域名
+     */
+    protected get hostname(): string {
+        return this.ctx.request.hostname
+    }
+
+    /**
+     * 当前URL 不含querystring
+     */
+    protected get baseUrl(): string {
+        return this.ctx.request.origin + this.ctx.request.path
+    }
+
+    /**
+     * 完整URL
+     */
+    protected get url(): string {
+        return this.ctx.request.href
     }
 
     /**
      * 是否method请求
      * @param method 
      */
-    protected isMethod(method: string) {
+    protected isMethod(method: string): boolean {
         return this.ctx.method === method.toUpperCase();
     }
 
@@ -35,7 +63,7 @@ class Base {
      * 是否ajax请求
      * @param method 
      */
-    protected isAjax(method) {
+    protected isAjax(method: string): boolean {
         if (method && !this.isMethod(method)) return false
         return this.ctx.header['x-requested-with'] === 'XMLHttpRequest'
     }
@@ -48,7 +76,7 @@ class Base {
         const json = (this.ctx.request as Request).body
         return this.param(name, json)
     }
-    
+
     /**
      * 获取文件
      * @param name 
@@ -72,9 +100,9 @@ class Base {
      * @param name 
      * @param json 
      */
-    private param(name: string, json: { [index: string]: any }) {
+    private param(name: string, json: { [index: string]: any }): { [index: string]: any } {
         if (!name) return json
-        if (name.indexOf(',') > -1) {
+        if (name.includes(',')) {
             let arr = name.split(/\s*,\s*/)
             let value: { [index: string]: any } = {}
             arr.forEach(item => {
@@ -82,9 +110,47 @@ class Base {
             })
             return value
         } else {
-            return json[name] || undefined
+            return json[name] || {}
+        }
+    }
+
+    /**
+     * 抛出错误
+     * @param msg 
+     * @param code 
+     */
+    protected error(msg: string, code: number = 500): void {
+        this.ctx.throw(msg, code)
+    }
+
+    /**
+     * 调用控制器下的方法
+     * @param controller 
+     * @param method 
+     */
+    protected async action(controller: string, method: string): Promise<any> {
+        let index: number = findIndex(ControllerStorage.Actions, { controller, method })
+        if (index == -1) this.error('Not Found')
+        const instance = new ControllerStorage.Actions[index].target(this.ctx)
+        return await instance[ControllerStorage.Actions[index].method]()
+    }
+
+    /**
+     * session
+     * @param name 
+     * @param value 
+     */
+    protected session(name: string | null, value?: any) {
+        if (value) {
+            return this.ctx.session[name] = value
+        } else {
+            if (name == null) {
+                this.ctx.session = null
+                return false
+            } else {
+                if (!this.ctx.session) return false
+                return this.ctx.session[name]
+            }
         }
     }
 }
-
-export default Base

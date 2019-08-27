@@ -1,5 +1,5 @@
 import register from './Register'
 
-export function Delete(url?: string) {
-    return register('DELETE', url)
+export function Delete(route?: string) {
+    return register(Object.assign({ route }, { type: "DELETE" }))
 }

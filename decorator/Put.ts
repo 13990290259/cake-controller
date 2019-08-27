@@ -1,5 +1,5 @@
 import register from './Register'
 
-export function Put(url?: string) {
-    return register('PUT', url)
+export function Put(route?: string) {
+    return register(Object.assign({ route }, { type: "PUT" }))
 }
