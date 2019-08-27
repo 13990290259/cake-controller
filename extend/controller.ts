@@ -1,6 +1,7 @@
 import { Context, BaseRequest } from 'koa'
 import ControllerStorage from '../index'
 import { findIndex } from 'lodash'
+import { DB } from 'cake-mysql'
 
 interface Request extends BaseRequest {
     body?: any
@@ -14,6 +15,13 @@ export default class Base {
 
     constructor(ctx: Context) {
         this.ctx = ctx
+    }
+
+    /**
+     * 获取DB类
+     */
+    protected get DB() {
+        return DB
     }
 
     /**
