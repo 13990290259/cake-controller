@@ -17,6 +17,7 @@
         "@types/require-directory": "^2.1.1"
     },
     "dependencies": {
+        "cake-mysql": "^1.0.2",
         "lodash": "^4.17.15",
         "require-directory": "^2.1.1"
     }
