@@ -116,11 +116,19 @@ export default class Base {
 
     /**
      * 抛出错误
-     * @param msg 
+     * @param error 
      * @param code 
      */
-    protected error(msg: string, code: number = 500): void {
-        this.ctx.throw(msg, code)
+    protected error(error: string | Error, code: number = 500): void {
+        this.ctx.throw(error instanceof Error ? error.message : error, code)
+    }
+
+    /**
+     * 抛出错误 错误代码
+     * @param code 
+     */
+    protected code(code: number): void {
+        this.ctx.throw(code)
     }
 
     /**
